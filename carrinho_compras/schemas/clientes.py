@@ -1,6 +1,7 @@
 from typing import List, Optional
+
 from pydantic import BaseModel, EmailStr, Field
-from decimal import Decimal
+
 
 # Classe representando os dados do endereço do cliente
 class Endereco(BaseModel):
@@ -11,7 +12,7 @@ class Endereco(BaseModel):
 
 
 # Classe representando os dados do cliente
-class Usuario(BaseModel):
+class Cliente(BaseModel):
     nome: str
     endereco: Optional[List[Endereco]] = Field(default_factory=list)
     email: EmailStr

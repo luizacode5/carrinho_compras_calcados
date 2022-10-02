@@ -1,5 +1,3 @@
 from fastapi import APIRouter
 
-rota_produtos = APIRouter(
-    prefix="/produtos"
-)
+rota_produtos = APIRouter(prefix="/produtos")

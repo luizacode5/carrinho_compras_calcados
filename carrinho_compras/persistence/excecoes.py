@@ -4,3 +4,9 @@ class ObjetoNaoEncontrado(Exception):
 
 class ObjetoNaoModificado(Exception):
     """Quando o update for igual a um existente"""
+
+class ObjetoInvalido(Exception):
+    """Quando o produto não atender os requisitos mínimos"""
+
+class ObjetoDuplicado(Exception):
+    """Quando o produto for duplicado"""

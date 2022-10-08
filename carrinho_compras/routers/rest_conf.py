@@ -13,7 +13,11 @@ def configurar_rotas(app: FastAPI):
     app.include_router(rota_carrinhos)
 
 def criar_aplicacao_fastapi():
-    app = FastAPI()
+    descricao_api = "Esta API é responsável pelos carrinhos de compra, cadastro \
+     de produtos e clientes para lojas online que vendem calçados."
+
+    app = FastAPI(title="API de Carrinho de Compras para Calçados ",
+        description=descricao_api)
     configurar_rotas(app)
 
     return app

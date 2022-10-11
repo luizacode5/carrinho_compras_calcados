@@ -9,7 +9,7 @@
 - [Stephanie Zimmermann](https://github.com/Stephaniezm)
 
 ## 📌 Introdução: 
-Projeto desenvolvido com base nos conhecimento adquiridos atráves do curso de Python oferecido pelo LuidaCode 5ª edição. 
+Projeto desenvolvido com base nos conhecimento adquiridos atráves do curso de Python oferecido pelo LuizaCode 5ª edição. 
 
 Foi criado um conjunto de APIs REst em python para um carrinho de compras, utilizando o
 framework FastAPI com seus registros salvos no banco de dados MongoDB.
@@ -53,11 +53,11 @@ sudo docker-compose logs -f
 - [x] Remover endereço
 
 ### 👞 Produto
-- [ ] Cadastrar produto
+- [x] Cadastrar produto
 - [ ] Atualizar dados de produto
-- [ ] Pesquisar produto
-- [ ] Pesquisar produto pelo nome
-- [ ] Remover um produto
+- [x] Pesquisar produto
+- [x] Pesquisar produto pelo nome
+- [x] Remover um produto
 
 ### 🛒 Carrinho
 - [ ] Abrir carrinho de compras

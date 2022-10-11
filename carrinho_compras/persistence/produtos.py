@@ -21,12 +21,6 @@ class AdaptadorProduto(AdaptadorBase):
         #testa se produto não tem nome
         if not produto.nome:
             raise ObjetoInvalido
-        #testa se produto tem preco menor do que R$0,01
-        if produto.preco < 0.01:
-            raise ObjetoInvalido
-        #testa se estoque está zerado
-        if produto.estoque < 1:
-            raise ObjetoInvalido
         return await super().cria(produto)
 
     async def pega_sku(self, sku: str) -> Produto:
@@ -34,6 +28,9 @@ class AdaptadorProduto(AdaptadorBase):
     
     async def pega_nome(self, nome: str) -> Produto:
         return await super().pega(nome, chave="nome")
+    
+    async def pega_codigo_cor_tamanho(self, codigo: str, cor:str, tamanho:int) -> Produto:
+        return await self.colecao.find_one({'codigo': codigo, 'cor': cor, 'tamanho': tamanho})
 
     async def pega_todos(
         self, pula: int = 0, limite: int = 10

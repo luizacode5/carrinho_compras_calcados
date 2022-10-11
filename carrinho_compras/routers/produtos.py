@@ -23,10 +23,8 @@ async def criar_produto(
         return await adaptador.cria(produto)
     except ObjetoDuplicado:
         raise HTTPException(status_code=409, detail="Produto já existe")
-    except ObjetoInvalido:
-        raise HTTPException(status_code=400, detail="Campos obigatórios não foram prenchidos coretamente")
-    except Exception:
-        raise HTTPException(status_code=400, detail="Falha ao inserir")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Falha ao inserir")
 
 @rota_produtos.get("/sku", response_model=Produto)
 async def retornar_produto_sku(
@@ -44,6 +42,19 @@ async def retornar_produto_nome(
     adaptador: AdaptadorProduto = Depends(),
 ):
     produto = await adaptador.pega(nome,chave='nome')
+    if produto is None:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+    return produto
+
+@rota_produtos.get("/codigo", response_model=Produto)
+async def retornar_produto_codigo_cor_tamanho(
+    codigo: str,
+    cor: str,
+    tamanho: int,
+    adaptador: AdaptadorProduto = Depends(),
+):
+    produto = await adaptador.pega_codigo_cor_tamanho(codigo, cor, tamanho)
+    print(1111, codigo, cor, tamanho)
     if produto is None:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
     return produto

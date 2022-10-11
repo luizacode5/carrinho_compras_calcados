@@ -1,20 +1,20 @@
-import json
-from bson import json_util
-from fastapi.encoders import jsonable_encoder
 from fastapi import HTTPException, status
-from bson import ObjectId
+import logging
+from pymongo import ASCENDING, DESCENDING
 
 from carrinho_compras.schemas.carrinhos import *
 from carrinho_compras.persistence.persistence_bd import obter_colecao
-from carrinho_compras.schemas.carrinhos import CarrinhoItemSchema
 
 
 COLECAO_CARRINHOS = obter_colecao("carrinho")
-COLECAO_PEDIDOS = obter_colecao("pedido")
 
-async def insere_carrinho(carrinho: CarrinhoSchema):
+async def insere_carrinho(carrinho: CarrinhoAtualizacao):
     try:
-        dados_carrinho = carrinho.dict()
+        dados_carrinho = carrinho.dict(exclude={"produto"})
+        
+        if carrinho.produto:
+            dados_carrinho["produtos"] = [carrinho.produto.dict()]
+
         resultado = await COLECAO_CARRINHOS.insert_one(dados_carrinho)
 
         if resultado.inserted_id:
@@ -22,82 +22,13 @@ async def insere_carrinho(carrinho: CarrinhoSchema):
         return False
         
     except Exception as e:
-        print(f"insere_carrinho.erro: {e}")
-        # logger.exception(f'insere_carrinho.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        logging.exception(f'insere_carrinho.erro: {e}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Não foi possível criar o carrinho")
 
-
-async def adiciona_itens_carrinho(email_cliente, produtos: list[CarrinhoItemSchema]):
+async def atualiza_carrinho(carrinho: CarrinhoAtualizacao):
     try:
-        produtos_carrinho = produtos.dict()
-
-        resultado  = await COLECAO_CARRINHOS.update_many(
-            {"email_cliente": email_cliente},
-            {"$addToSet": {
-                "itens":
-                {
-                    "$each": [produtos_carrinho]
-                }
-            }}
-        )
-
-        if resultado.modified_count > 0:
-            return True
-        return False
-
-    except Exception as e:
-        print(f"adiciona_itens_carrinho.erro: {e}")
-        # logger.exception(f'adiciona_itens_carrinho.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-
-async def altera_item_carrinho(produto: CarrinhoItemSchema, email_cliente):
-    try:
-        resultado = await COLECAO_CARRINHOS.update_one(
-            {"email_cliente": email_cliente,
-             "itens": {"$elemMatch":  {"codigo": produto.codigo,
-                                        "cor": produto.cor, 
-                                        "numeracao": produto.numeracao
-                                        }
-                    }
-            },
-            {"$set": {"itens.$.quantidade": produto.quantidade,
-                        "itens.$.data_atualizacao": produto.data_atualizacao,
-                        "itens.$.presente": produto.presente }
-            }
-        )
-
-        if resultado.modified_count > 0:
-            return True
-        return False
-
-    except Exception as e:
-        print(f"altera_item_carrinho.erro: {e}")
-        # logger.exception(f'altera_item_carrinho.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-async def exclui_item_carrinho(insere_carrinho: CarrinhoItemSchema, email_cliente):
-    try:
-        resultado = await COLECAO_CARRINHOS.update_one(
-            {"email_cliente": email_cliente},
-            {"$pull": {"itens": {"codigo": insere_carrinho.codigo,
-                                "cor": insere_carrinho.cor, 
-                                "numeracao": insere_carrinho.numeracao
-                                }
-                }
-            }
-        )
-        if resultado.modified_count > 0:
-            return True
-        return False
-    except Exception as e:
-        print(f"exclui_item_carrinho.erro: {e}")
-        # logger.exception(f'exclui_item_carrinho.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-async def atualiza_carrinho(carrinho: CarrinhoSchema):
-    try:
-        data_carrinho = carrinho.dict(exclude={"itens"})
+        data_carrinho = carrinho.dict(exclude={"produto"})
         campos_alterar = {k: v for k, v in data_carrinho.items() if v is not None}
 
         resultado = await COLECAO_CARRINHOS.update_one(
@@ -105,29 +36,86 @@ async def atualiza_carrinho(carrinho: CarrinhoSchema):
             {"$set": campos_alterar},
         )
 
-        if resultado.modified_count:
+        if resultado.modified_count > 0:
             return True
         return False
 
     except Exception as e:
-        print(f"atualiza_carrinho.erro: {e}")
-        # logger.exception(f'atualiza_carrinho.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        logging.exception(f'atualiza_carrinho.erro: {e}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Não foi possível atualizar o carrinho")  
 
-async def insere_pedido(pedido: PedidoSchema):
+async def insere_produto_carrinho(carrinho: CarrinhoAtualizacao):
     try:
-        dados_pedido = pedido.dict()
-        
-        resultado = await COLECAO_PEDIDOS.insert_one(dados_pedido)
+        dados_produto = carrinho.produto.dict()
 
-        if resultado.inserted_id:
-            return resultado.inserted_id
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        resultado  = await COLECAO_CARRINHOS.update_one(
+            {"email_cliente": carrinho.email_cliente},
+            {"$set": {"valor_total": carrinho.valor_total,
+                    "quantidade_total": carrinho.quantidade_total,
+                    "valor_frete": carrinho.valor_frete,
+                    "data_atualizacao": carrinho.data_atualizacao},
+            "$addToSet": {"produtos": dados_produto}
+            }
+        )
+
+        if resultado.modified_count > 0:
+            return True
+        return False
 
     except Exception as e:
-        print(f"insere_pedido.erro: {e}")
-        # logger.exception(f'insere_pedido.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        logging.exception(f'insere_produto_carrinho.erro: {e}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Não foi possível inserir o produto no carrinho")  
+
+async def atualiza_produto_carrinho(carrinho: CarrinhoAtualizacao):
+    try:
+        resultado = await COLECAO_CARRINHOS.update_one(
+            {"email_cliente": carrinho.email_cliente,
+             "produtos": {"$elemMatch":  {"codigo": carrinho.produto.codigo,
+                                        "cor": carrinho.produto.cor, 
+                                        "numeracao": carrinho.produto.numeracao}
+                        }
+            },
+            {"$set": {"valor_total": carrinho.valor_total,
+                        "quantidade_total": carrinho.quantidade_total,
+                        "valor_frete": carrinho.valor_frete,
+                        "data_atualizacao": carrinho.data_atualizacao,
+                        "produtos.$.quantidade": carrinho.produto.quantidade,
+                        "produtos.$.data_atualizacao": carrinho.produto.data_atualizacao,
+                        "produtos.$.presente": carrinho.produto.presente}
+            }
+        )
+        if resultado.modified_count > 0:
+            return True
+        return False
+
+    except Exception as e:
+        logging.exception(f'atualiza_produto_carrinho.erro: {e}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Não foi possível atualizar o produto no carrinho")  
+
+async def exclui_item_carrinho(carrinho: CarrinhoAtualizacao):
+    try:
+        resultado = await COLECAO_CARRINHOS.update_one(
+            {"email_cliente": carrinho.email_cliente},
+            {"$set": {"valor_total": carrinho.valor_total,
+                        "quantidade_total": carrinho.quantidade_total,
+                        "data_atualizacao": carrinho.data_atualizacao},
+            "$pull": {"produtos": {"codigo": carrinho.produto.codigo,
+                                    "cor": carrinho.produto.cor, 
+                                    "numeracao": carrinho.produto.numeracao}
+                    }
+            }
+        )
+        if resultado.modified_count > 0:
+            return True
+        return False
+
+    except Exception as e:
+        logging.exception(f'exclui_item_carrinho.erro: {e}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Não foi possível excluir o produto do carrinho")
         
 async def exclui_carrinho(email_cliente: str):
     try:
@@ -135,90 +123,106 @@ async def exclui_carrinho(email_cliente: str):
             {"email_cliente": email_cliente}
         )
 
-        if resultado.deleted_count:
+        if resultado.deleted_count > 0:
             return True
         return False
 
     except Exception as e:
-        print(f"exclui_carrinho.erro: {e}")
-        # logger.exception(f'exclui_carrinho.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Não foi possível excluir o carrinho")
+        logging.exception(f'exclui_carrinho.erro: {e}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Não foi possível excluir o carrinho")
 
-
-async def busca_carrinho_cliente(email_cliente: str):
+async def busca_carrinho_cliente(email_cliente: str) -> CarrinhoCompleto:
     try:
         resultado = await COLECAO_CARRINHOS.find_one(
             {"email_cliente" : email_cliente}
-            )
+        )
 
         if resultado:
-            carrinho = CarrinhoSchema(**resultado)
+            carrinho = CarrinhoCompleto(**resultado)
             return carrinho
-        # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Não foi encontrado carrinho para o cliente informado")
 
     except Exception as e:
-        print(f"busca_carrinho_cliente.erro: {e}")
-        # logger.exception(f'busca_carrinho_cliente.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-    
-async def busca_pedido_por_id(id_pedido: str):
-    try:
-        resultado = await COLECAO_PEDIDOS.find_one(
-            {"_id" : ObjectId(id_pedido)}
-            )
+        logging.exception(f'busca_carrinho_cliente.erro: {e}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Não foi possível consultar o carrinho do cliente")
 
-        if resultado:
-            pedido = PedidoSchema(**resultado)
-            return pedido
-        return False
+async def busca_carrinhos_por_produto(
+    filtro_produto: dict, 
+    registros_pular: int, 
+    qtde_por_pagina: int
+    ) -> ListaCarrinhos:
+    try:
+        lista_carrinhos = ListaCarrinhos()
+
+        cursor_pesquisa = COLECAO_CARRINHOS \
+            .find({"produtos": 
+                        {"$elemMatch": filtro_produto}}) \
+            .skip(registros_pular) \
+            .limit(qtde_por_pagina) \
+            .sort("data_criacao_carrinho", DESCENDING)
+
+        async for carrinhos_resultado in cursor_pesquisa:
+            carrinho = CarrinhoCompleto(**carrinhos_resultado)
+            lista_carrinhos.carrinhos.append(carrinho)
+
+        return lista_carrinhos
 
     except Exception as e:
-        print(f"busca_pedido_por_id.erro: {e}")
-        # logger.exception(f'busca_pedido_por_id.erro: {e}')
-        # raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        logging.exception(f'busca_carrinhos_por_produto.erro: {e}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Não foi possível realizar a consulta de carrinhos por produto")
 
-
-async def busca_pedidos_por_cliente(email_cliente: str):
+async def busca_produtos_populares(
+    registros_pular: int,
+    qtde_por_pagina: int
+    ) -> ProdutosPopulares:
     try:
-        lista_pedidos = ListaPedidos()
-        cursor_pesquisa = await COLECAO_PEDIDOS.find(
-            {"email_cliente" : email_cliente}
-            )
+        lista_produtos = ProdutosPopulares()
+        lista_produtos.produtos = []
+
+        cursor_pesquisa = COLECAO_CARRINHOS \
+            .aggregate( [   
+                    {"$unwind": "$produtos" }, 
+                    {"$group": { "_id": {"codigo": "$produtos.codigo",  
+                                        "cor": "$produtos.cor", 
+                                        "numeracao": "$produtos.numeracao"},  
+                    "quantidade_total": { "$sum": "$produtos.quantidade" }}}, 
+                    {"$sort":{"quantidade_total": DESCENDING}},
+                    {"$skip":registros_pular},
+                    {"$limit":qtde_por_pagina}
+            ])
+
+        async for produtos_resultado in cursor_pesquisa:
+            produto = QuantidadeTotalPorProduto(**produtos_resultado["_id"])
+            produto.quantidade_total = produtos_resultado["quantidade_total"]
+            lista_produtos.produtos.append(produto)
+
+        return lista_produtos
+    except Exception as e:
+        logging.exception(f'busca_produtos_populares.erro: {e}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Não foi possível realizar a consulta de produtos populares")
+
+async def busca_carrinhos_abandonados(
+    registros_pular: int, 
+    qtde_por_pagina: int
+    ) -> ListaCarrinhos:
+    try:
+        lista_carrinhos = ListaCarrinhos()
+
+        cursor_pesquisa = COLECAO_CARRINHOS \
+            .find({}) \
+            .skip(registros_pular) \
+            .limit(qtde_por_pagina) \
+            .sort("data_criacao_carrinho", ASCENDING)
         
-        async for pedido_resultado in cursor_pesquisa:
-            pedido = PedidoSchema(**pedido_resultado)
-            lista_pedidos.append(pedido)
-        return lista_pedidos
-        
-        # raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Não foi encontrado carrinho para o cliente informado")
+        async for carrinhos_resultado in cursor_pesquisa:
+            carrinho = CarrinhoCompleto(**carrinhos_resultado)
+            lista_carrinhos.carrinhos.append(carrinho)
 
+        return lista_carrinhos
     except Exception as e:
-        print(f"busca_pedidos_por_cliente.erro: {e}")
-        # logger.exception(f'busca_pedidos_por_cliente.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-
-
-async def busca_carrinhos_por_produto(codigo_produto: str):
-    try:
-        return {"sucesso": "busca_carrinhos_por_produto"}
-    except Exception as e:
-        print(f"busca_carrinhos_por_produto.erro: {e}")
-        # logger.exception(f'busca_carrinhos_por_produto.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-async def busca_produtos_populares():
-    try:
-        return {"sucesso": "busca_produtos_populares"}
-    except Exception as e:
-        print(f"busca_produtos_populares.erro: {e}")
-        # logger.exception(f'busca_produtos_populares.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-async def busca_carrinhos_abandonados():
-    try:
-        return {"sucesso": "busca_carrinhos_abandonados"}
-    except Exception as e:
-        print(f"busca_carrinhos_abandonados.erro: {e}")
-        # logger.exception(f'busca_carrinhos_abandonados.erro: {e}')
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        logging.exception(f'busca_carrinhos_abandonados.erro: {e}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Não foi possível realizar a consulta de carrinhos abandonados")

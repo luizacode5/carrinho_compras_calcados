@@ -109,7 +109,7 @@ async def busca_produtos_mais_vendidos(
                     {"$unwind": "$produtos" }, 
                     {"$group": {"_id": {"codigo": "$produtos.codigo",  
                                         "cor": "$produtos.cor", 
-                                        "numeracao": "$produtos.numeracao"},  
+                                        "tamanho": "$produtos.tamanho"},  
                     "quantidade_total": {"$sum": "$produtos.quantidade" }}}, 
                     {"$sort":{"quantidade_total": DESCENDING}},
                     {"$skip":registros_pular},

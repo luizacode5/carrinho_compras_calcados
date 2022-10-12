@@ -79,14 +79,14 @@ async def fecha_carrinho(email_cliente: EmailStr = Query(
 async def busca_carrinhos_por_produto(
     codigo_produto: str = Query(default=None, description="Código do produto"),
     cor_produto: str = Query(default=None, description="Cor do produto"),
-    numeracao_produto: str = Query(default=None, description="Numeração do produto"),
+    tamanho_produto: str = Query(default=None, description="Tamanho/numeração do produto"),
     numero_pagina: int = Query(default=0, description="Número da página"),
     qtde_por_pagina: int = Query(default=50,
         description="Quantidade de registros por página. Valor máximo: 50")):
     resultado = await carrinhos.busca_carrinhos_por_produto(
         codigo_produto,
         cor_produto,
-        numeracao_produto,
+        tamanho_produto,
         numero_pagina,
         qtde_por_pagina)
     return resultado

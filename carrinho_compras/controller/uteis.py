@@ -12,14 +12,14 @@ async def ajusta_paginacao(numero_pagina: int, qtde_por_pagina: int):
 
     return registros_pular, qtde_por_pagina
 
-async def gera_filtro_produto(codigo_produto: str, cor_produto: str, numeracao_produto: str):
+async def gera_filtro_produto(codigo_produto: str, cor_produto: str, tamanho_produto: int):
     filtro = []
     if codigo_produto != None:
         filtro.append(f'"codigo": {{"$regex": "{codigo_produto}", "$options": "i"}}')
     if cor_produto != None:
         filtro.append(f'"cor": {{"$regex": "{cor_produto}", "$options": "i"}}')
-    if numeracao_produto != None:
-        filtro.append(f'"numeracao": {{"$regex": "{numeracao_produto}", "$options": "i"}}')
+    if tamanho_produto != None:
+        filtro.append(f'"tamanho": {tamanho_produto}')
     
     string_filtro = ""
     for item_filtro in filtro:
@@ -31,7 +31,7 @@ async def gera_filtro_produto(codigo_produto: str, cor_produto: str, numeracao_p
     
     if string_filtro == "":
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, 
-            detail="É obrigatório informar pelo menos um dos filtros de produto: codigo, cor ou numeração")
+            detail="É obrigatório informar pelo menos um dos filtros de produto: codigo, cor ou tamanho")
 
     string_filtro = '{'+ f"{string_filtro}" + '}'
     filtro_produto = json.loads(string_filtro)

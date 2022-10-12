@@ -2,7 +2,7 @@
 POST_CARRINHO_DESCRICAO = """
 Cria um carrinho para o cliente, caso o cliente não tenha carrinho aberto.   
 Adiciona um produto ao carrinho. Podem ser adicionados vários produtos ao carrinho, fazendo uma requisição para cada produto.   
-Substitui o produto no carrinho, caso o carrinho já possua um produto semelhante, ou seja, produto com mesmo código, cor e numeração.   
+Substitui o produto no carrinho, caso o carrinho já possua um produto semelhante, ou seja, produto com mesmo código, cor e tamanho.   
 Não permite a alteração das informações principais do carrinho, com exceção do valor do frete, que normalmente varia de acordo com as alterações realizadas nos itens.   
    
 Informações principais (cabeçalho):   
@@ -16,7 +16,7 @@ Informações principais (cabeçalho):
 Produtos:   
 - `codigo`: Código do produto.   
 - `cor`: Cor/modelo do produto escolhido pelo cliente.   
-- `numeracao`: Número da grade do calçado selecionado pelo cliente.   
+- `tamanho`: Número da grade do calçado selecionado pelo cliente.   
 - `quantidade`: Quantidade do produto adicionada ao carrinho. Precisa ser um valor inteiro maior que zero.   
 - `presente`: Informação opcional, que indica se o produto deve ser embalado para presente. Caso não informado, será igual a 'False'.   
    
@@ -45,7 +45,7 @@ Informações necessárias para processar a solicitação:
 - `email_cliente`: E-mail do cliente ao qual o carrinho está vinculado.   
 - `codigo`: Código do produto que será excluído.   
 - `cor`: Cor/modelo do produto.   
-- `numeracao`: Númeração do produto.   
+- `tamanho`: Númeração do produto.   
    
 Se o produto for excluído corretamente do carrinho, a API retornará sucesso (código HTTP 200).   
 """
@@ -86,7 +86,7 @@ Opções de filtro de dados:
 - *É obrigatório o preenchimento de pelo menos um dos filtros de produto.   
 - `codigo_produto`: Código do produto.   
 - `cor_produto`: Cor/modelo do produto escolhido pelo cliente. É case-insensitive. Filtra registros que contém o texto informado.    
-- `numeracao_produto`: Número da grade do calçado selecionado pelo cliente.   
+- `tamanho_produto`: Número da grade do calçado selecionado pelo cliente.   
    
 Filtros de paginação:   
 - `numero_pagina`: Número da página a ser pesquisada. É opcional. Se não for informado, traz a primeira página.   

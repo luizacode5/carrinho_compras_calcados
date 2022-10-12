@@ -29,7 +29,7 @@ Opções de filtro de dados:
 - *É obrigatório o preenchimento de pelo menos um dos filtros de produto.   
 - `codigo_produto`: Código do produto.   
 - `cor_produto`: Cor/modelo do produto. É case-insensitive. Filtra registros que contém o texto informado.     
-- `numeracao_produto`: Número da grade do calçado.   
+- `tamanho_produto`: Número da grade do calçado.   
    
 Filtros de paginação:   
 - `numero_pagina`: Número da página a ser pesquisada. É opcional. Se não for informado, traz a primeira página.   

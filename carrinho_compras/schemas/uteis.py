@@ -10,7 +10,7 @@ class ConsultaPaginada(BaseModel):
 class QuantidadeTotalPorProduto(BaseModel):
     codigo: str = Field(description="Código do produto")
     cor: str = Field(description="Cor do produto")
-    numeracao: str = Field(description="Numeração do produto")
+    tamanho: str = Field(description="Tamanho/numeração do produto")
     quantidade_total: Optional[str] = Field(
         description="Somatório da quantidade do produto")
     
@@ -20,19 +20,19 @@ class QuantidadeTotalPorProduto(BaseModel):
                 {
                     "codigo": "111",
                     "cor": "Vermelho",
-                    "numeracao": "38",
+                    "tamanho": "38",
                     "quantidade_total": "15"
                 },
                 {
                     "codigo": "111",
                     "cor": "Preto",
-                    "numeracao": "35",
+                    "tamanho": "35",
                     "quantidade_total": "8"
                 },
                 {
                     "codigo": "222",
                     "cor": "Vermelho",
-                    "numeracao": "35",
+                    "tamanho": "35",
                     "quantidade_total": "6"
                 }
             ]

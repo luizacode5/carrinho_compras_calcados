@@ -9,7 +9,7 @@ from carrinho_compras.schemas.uteis import *
 class CarrinhoItemBase(BaseModel):
     codigo: str = Field(description="Código do produto")
     cor: str = Field(description="Cor/modelo do produto")
-    numeracao: str = Field(description="Numeração do produto")
+    tamanho: int = Field(description="Tamanho/numeração do produto")
     quantidade: int = Field(1, ge=1, description="Quantidade do produto no carrinho")
     presente: bool = Field(False, description="É presente")
 
@@ -59,7 +59,7 @@ class CarrinhoRequest(CarrinhoBase):
                 "produto":{
                             "codigo": "111",
                             "cor": "Vermelho",
-                            "numeracao": "38",
+                            "tamanho": "38",
                             "quantidade": 2,
                             "presente": False
                         }
@@ -73,14 +73,14 @@ class CarrinhoAtualizacao(CarrinhoSchema):
 class ExclusaoProdutoRequest(BaseModel):
     codigo: str = Field(description="Código do produto")
     cor: str = Field(description="Cor/modelo do produto")
-    numeracao: str = Field(description="Numeração do produto")
+    tamanho: int = Field(description="Tamanho/numeração do produto")
 
     class Config:
         schema_extra = {
             "example": {
                 "codigo": "111",
                 "cor": "Vermelho",
-                "numeracao": "38"
+                "tamanho": "38"
             }
         }
 

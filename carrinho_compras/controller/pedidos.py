@@ -44,7 +44,7 @@ async def busca_pedidos_por_cliente(
 async def busca_pedidos_por_produto(
     codigo_produto: str,
     cor_produto: str,
-    numeracao_produto: str,
+    tamanho_produto: int,
     numero_pagina: int,
     qtde_por_pagina: int) -> ListaPedidos:
 
@@ -56,7 +56,7 @@ async def busca_pedidos_por_produto(
     filtro_produto = await uteis.gera_filtro_produto(
         codigo_produto,
         cor_produto,
-        numeracao_produto
+        tamanho_produto
         )
 
     resultado = await pedidos.busca_pedidos_por_produto(

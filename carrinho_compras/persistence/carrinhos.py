@@ -74,7 +74,7 @@ async def atualiza_produto_carrinho(carrinho: CarrinhoAtualizacao):
             {"email_cliente": carrinho.email_cliente,
              "produtos": {"$elemMatch":  {"codigo": carrinho.produto.codigo,
                                         "cor": carrinho.produto.cor, 
-                                        "numeracao": carrinho.produto.numeracao}
+                                        "tamanho": carrinho.produto.tamanho}
                         }
             },
             {"$set": {"valor_total": carrinho.valor_total,
@@ -104,7 +104,7 @@ async def exclui_item_carrinho(carrinho: CarrinhoAtualizacao):
                         "data_atualizacao": carrinho.data_atualizacao},
             "$pull": {"produtos": {"codigo": carrinho.produto.codigo,
                                     "cor": carrinho.produto.cor, 
-                                    "numeracao": carrinho.produto.numeracao}
+                                    "tamanho": carrinho.produto.tamanho}
                     }
             }
         )
@@ -186,7 +186,7 @@ async def busca_produtos_populares(
                     {"$unwind": "$produtos" }, 
                     {"$group": { "_id": {"codigo": "$produtos.codigo",  
                                         "cor": "$produtos.cor", 
-                                        "numeracao": "$produtos.numeracao"},  
+                                        "tamanho": "$produtos.tamanho"},  
                     "quantidade_total": { "$sum": "$produtos.quantidade" }}}, 
                     {"$sort":{"quantidade_total": DESCENDING}},
                     {"$skip":registros_pular},

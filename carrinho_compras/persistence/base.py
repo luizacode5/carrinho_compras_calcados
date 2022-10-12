@@ -40,6 +40,22 @@ class AdaptadorBase:
         self,
         dados: BaseModel,
         identificador: Any,
+        chave: str
+    ) -> BaseModel:
+        atualizados = await self.colecao.update_one(
+            {chave: identificador},
+            {"$set":  convert_decimal(dados.dict())},
+        )
+        if atualizados.matched_count == 0:
+            raise ObjetoNaoEncontrado
+        if atualizados.modified_count == 0:
+            raise ObjetoNaoModificado
+        return dados
+    
+    async def atualiza_item_lista(
+        self,
+        dados: BaseModel,
+        identificador: Any,
         chave: str,
         chave_de_atualizacao: str,
     ) -> BaseModel:

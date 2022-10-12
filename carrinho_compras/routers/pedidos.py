@@ -29,7 +29,7 @@ async def busca_pedido_por_id(id_pedido: str = Query(
     response_model=ListaPedidos,
     status_code=status.HTTP_200_OK)
 async def busca_pedidos_por_cliente(
-    email_cliente: str = Query(description="Email do cliente"),
+    email_cliente: EmailStr = Query(description="Email do cliente"),
     numero_pagina: int = Query(default=0,
         description="Número da página"),
     qtde_por_pagina: int = Query(default=50,

@@ -117,7 +117,7 @@ async def exclui_item_carrinho(carrinho: CarrinhoAtualizacao):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
             detail="Não foi possível excluir o produto do carrinho")
         
-async def exclui_carrinho(email_cliente: str):
+async def exclui_carrinho(email_cliente: EmailStr):
     try:
         resultado = await COLECAO_CARRINHOS.delete_one(
             {"email_cliente": email_cliente}
@@ -132,7 +132,7 @@ async def exclui_carrinho(email_cliente: str):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
             detail="Não foi possível excluir o carrinho")
 
-async def busca_carrinho_cliente(email_cliente: str) -> CarrinhoCompleto:
+async def busca_carrinho_cliente(email_cliente: EmailStr) -> CarrinhoCompleto:
     try:
         resultado = await COLECAO_CARRINHOS.find_one(
             {"email_cliente" : email_cliente}

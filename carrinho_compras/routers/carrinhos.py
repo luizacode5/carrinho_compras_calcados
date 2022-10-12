@@ -35,7 +35,7 @@ async def atualiza_carrinho(carrinho: CarrinhoRequest):
     description=DELETE_ITEM_CARRINHO_DESCRICAO,
     status_code=status.HTTP_202_ACCEPTED)
 async def exclui_item_carrinho(produto: ExclusaoProdutoRequest,
-    email_cliente: str = Query(description="Email do cliente")):
+    email_cliente: EmailStr = Query(description="Email do cliente")):
     resultado = await carrinhos.exclui_item_carrinho(produto, email_cliente)
     return resultado
 
@@ -43,7 +43,7 @@ async def exclui_item_carrinho(produto: ExclusaoProdutoRequest,
     summary="Exclui carrinho",
     description=DELETE_CARRINHO_DESCRICAO,
     status_code=status.HTTP_202_ACCEPTED)
-async def exclui_carrinho(email_cliente: str = Query(
+async def exclui_carrinho(email_cliente: EmailStr = Query(
     description="Email do cliente")):
     resultado = await carrinhos.exclui_carrinho(email_cliente)
     return resultado
@@ -53,7 +53,7 @@ async def exclui_carrinho(email_cliente: str = Query(
     description=GET_CARRINHO_CLIENTE_DESCRICAO,
     response_model=CarrinhoCompleto,
     status_code=status.HTTP_200_OK)
-async def busca_carrinho_cliente(email_cliente: str = Query(
+async def busca_carrinho_cliente(email_cliente: EmailStr = Query(
     description="Email do cliente")):
     resultado = await carrinhos.busca_carrinho_cliente(email_cliente)
     if not resultado:
@@ -66,7 +66,7 @@ async def busca_carrinho_cliente(email_cliente: str = Query(
     description=PUT_FECHA_CARRINHO_DESCRICAO,
     response_model=PedidoSchema,
     status_code=status.HTTP_202_ACCEPTED)
-async def fecha_carrinho(email_cliente: str = Query(
+async def fecha_carrinho(email_cliente: EmailStr = Query(
     description="Email do cliente")):
     resultado = await carrinhos.fecha_carrinho(email_cliente)
     return resultado

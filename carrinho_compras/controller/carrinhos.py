@@ -3,8 +3,9 @@ from fastapi import HTTPException, status
 
 from carrinho_compras.schemas.carrinhos import *
 from carrinho_compras.schemas.pedidos import *
-from carrinho_compras.controller import clientes, produtos, pedidos, uteis
+from carrinho_compras.controller import produtos, pedidos, uteis
 from carrinho_compras.persistence import carrinhos
+from carrinho_compras.persistence.clientes import AdaptadorCliente
 
 
 async def adiciona_itens_carrinho(carrinho: CarrinhoRequest) -> CarrinhoCompleto:
@@ -18,7 +19,8 @@ async def adiciona_itens_carrinho(carrinho: CarrinhoRequest) -> CarrinhoCompleto
     dados_carrinho = await busca_carrinho_cliente(carrinho.email_cliente)
 
     if not dados_carrinho:
-        existe_cliente = await clientes.busca_cliente_por_email(carrinho.email_cliente)
+        adaptador = AdaptadorCliente()
+        existe_cliente = await adaptador.pega(carrinho.email_cliente)
         if not existe_cliente:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
                 detail="Não há cliente cadastrado com o e-mail informado")
@@ -115,11 +117,11 @@ async def atualiza_carrinho(carrinho: CarrinhoRequest) -> CarrinhoCompleto:
     dados_carrinho = await busca_carrinho_cliente(carrinho.email_cliente)
     return dados_carrinho
 
-async def busca_carrinho_cliente(email_cliente: str) -> CarrinhoCompleto:
+async def busca_carrinho_cliente(email_cliente: EmailStr) -> CarrinhoCompleto:
     dados_carrinho = await carrinhos.busca_carrinho_cliente(email_cliente)
     return dados_carrinho
 
-async def exclui_carrinho(email_cliente: str):
+async def exclui_carrinho(email_cliente: EmailStr):
     resultado = await carrinhos.exclui_carrinho(email_cliente)
     if resultado:
         return {"detail": "Carrinho excluído com sucesso"}
@@ -140,7 +142,7 @@ async def busca_produto_carrinho(
 
 async def exclui_item_carrinho(
     produto_excluir: ExclusaoProdutoRequest, 
-    email_cliente: str
+    email_cliente: EmailStr
     ):
 
     dados_carrinho = await busca_carrinho_cliente(email_cliente)
@@ -186,7 +188,7 @@ async def exclui_item_carrinho(
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
         detail="Não foi possível excluir o produto do carrinho")
 
-async def fecha_carrinho(email_cliente: str) -> PedidoSchema:
+async def fecha_carrinho(email_cliente: EmailStr) -> PedidoSchema:
     dados_carrinho = await busca_carrinho_cliente(email_cliente)
     
     if not dados_carrinho:

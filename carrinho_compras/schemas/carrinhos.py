@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
+from pydantic import EmailStr
 
 from carrinho_compras.schemas.uteis import *
 
@@ -14,7 +15,7 @@ class CarrinhoItemBase(BaseModel):
 
 
 class CarrinhoBase(BaseModel):
-    email_cliente: str = Field(description="E-mail do cliente")
+    email_cliente: EmailStr = Field(description="E-mail do cliente")
     codigo: Optional[int] = Field(description="Código do pedido/carrinho")
     cep: Optional[int] = Field(description="CEP do endereço de entrega")
     forma_pagamento: Optional[str] = Field(description="Forma de pagamento")

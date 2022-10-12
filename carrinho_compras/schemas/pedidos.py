@@ -1,6 +1,7 @@
 from pydantic import Field
 from typing import Optional
 from datetime import datetime
+from pydantic import EmailStr
 
 from carrinho_compras.schemas.carrinhos import *
 from carrinho_compras.schemas.uteis import *
@@ -23,7 +24,7 @@ class ProdutosMaisVendidos(ConsultaPaginada):
 
 
 class TotalPedidosPorCliente(BaseModel):
-    email_cliente: Optional[str] = Field(description="E-mail do cliente")
+    email_cliente: Optional[EmailStr] = Field(description="E-mail do cliente")
     quantidade_total: Optional[str] = Field(description="Quantidade total de pedidos")
     valor_total: Optional[str] = Field(description="Valor total de pedidos")
         

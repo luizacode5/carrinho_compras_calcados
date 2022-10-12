@@ -45,7 +45,7 @@ async def busca_pedido_por_id(id_pedido: str) -> PedidoSchema:
 
 
 async def busca_pedidos_por_cliente(
-    email_cliente: str,
+    email_cliente: EmailStr,
     registros_pular: int,
     qtde_por_pagina: int
     ) -> ListaPedidos:

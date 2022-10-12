@@ -15,7 +15,7 @@ async def busca_pedido_por_id(id_pedido: str):
     return resultado
 
 async def busca_pedidos_por_cliente(
-    email_cliente: str, 
+    email_cliente: EmailStr, 
     numero_pagina: int, 
     qtde_por_pagina: int
     ) -> ListaPedidos:

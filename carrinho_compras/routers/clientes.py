@@ -6,7 +6,10 @@ from carrinho_compras.persistence.clientes import AdaptadorCliente
 from carrinho_compras.persistence.excecoes import ObjetoNaoModificado
 from carrinho_compras.schemas.clientes import Cliente
 
-rota_clientes = APIRouter(prefix="/clientes")
+rota_clientes = APIRouter(
+    prefix="/clientes",
+    tags=["Clientes"]
+)
 
 
 @rota_clientes.post("/", status_code=201, response_model=Cliente)

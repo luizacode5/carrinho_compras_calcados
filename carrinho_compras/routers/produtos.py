@@ -7,12 +7,15 @@ from fastapi import APIRouter, Depends, HTTPException
 from pymongo.errors import DuplicateKeyError, PyMongoError
 
 from carrinho_compras.persistence.produtos import AdaptadorProduto
-from carrinho_compras.persistence.excecoes import ObjetoInvalido, ObjetoNaoModificado, ObjetoDuplicado
+from carrinho_compras.persistence.excecoes import *
 from carrinho_compras.schemas.produtos import Produto
 
 
-rota_produtos = APIRouter(prefix="/produtos")
-
+rota_produtos = APIRouter(
+    prefix="/produtos",
+    tags=["Produtos"]
+)
+    
 
 @rota_produtos.post("/", status_code=201, response_model=Produto)
 async def criar_produto(
@@ -25,6 +28,18 @@ async def criar_produto(
         raise HTTPException(status_code=409, detail="Produto já existe")
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Falha ao inserir")
+
+@rota_produtos.put("/", status_code=200, response_model=Produto)
+async def alterar_produto(
+    produto: Produto,
+    adaptador: AdaptadorProduto = Depends(),
+):
+    try:
+        return await adaptador.atualiza(produto, produto.sku, "sku")
+    except ObjetoNaoEncontrado:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Falha ao atualizar {e}")
 
 @rota_produtos.get("/sku", response_model=Produto)
 async def retornar_produto_sku(

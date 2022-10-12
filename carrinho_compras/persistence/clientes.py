@@ -23,7 +23,7 @@ class AdaptadorCliente(AdaptadorBase):
         email: EmailStr,
         endereco: Endereco,
     ) -> Cliente:
-        return await super().atualiza(
+        return await super().atualiza_item_lista(
             endereco, email, "email", chave_de_atualizacao="endereco"
         )
 

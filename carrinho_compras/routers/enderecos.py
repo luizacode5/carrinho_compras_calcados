@@ -7,7 +7,10 @@ from carrinho_compras.persistence.excecoes import (ObjetoNaoEncontrado,
                                                    ObjetoNaoModificado)
 from carrinho_compras.schemas.clientes import Endereco
 
-rota_enderecos = APIRouter(prefix="/enderecos")
+rota_enderecos = APIRouter(
+    prefix="/enderecos",
+    tags=["Endereços"]
+)
 
 
 @rota_enderecos.post("/", status_code=201, response_model=Endereco)

@@ -11,7 +11,10 @@ from carrinho_compras.persistence.excecoes import ObjetoInvalido, ObjetoNaoModif
 from carrinho_compras.schemas.produtos import Produto
 
 
-rota_produtos = APIRouter(prefix="/produtos")
+rota_produtos = APIRouter(
+    prefix="/produtos",
+    tags=["Produtos"]
+)
 
 
 @rota_produtos.post("/", status_code=201, response_model=Produto)

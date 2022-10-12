@@ -3,18 +3,30 @@ from fastapi import HTTPException, status
 
 from carrinho_compras.schemas.carrinhos import *
 from carrinho_compras.schemas.pedidos import *
-from carrinho_compras.controller import produtos, pedidos, uteis
+from carrinho_compras.schemas.produtos import *
+from carrinho_compras.controller import pedidos, uteis
 from carrinho_compras.persistence import carrinhos
 from carrinho_compras.persistence.clientes import AdaptadorCliente
+from carrinho_compras.persistence.produtos import AdaptadorProduto
 
 
 async def adiciona_itens_carrinho(carrinho: CarrinhoRequest) -> CarrinhoCompleto:
 
-    # if carrinho.produto:
-    #     produto_disponivel = await produtos.consulta_produto(dados_produto)
-    #     if not produto_disponivel:
-    #         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
-    #             detail="Produto indisponível")
+    produto = AdaptadorProduto()
+
+    if carrinho.produto:
+        dados_produto = await produto.pega_codigo_cor_tamanho(
+            carrinho.produto.codigo,
+            carrinho.produto.cor,
+            carrinho.produto.tamanho
+            )
+        if not dados_produto:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
+                detail="Não foi encontrado o cadastro deste produto na base de dados")
+        dados_produto = Produto(**dados_produto)
+        if dados_produto.estoque < carrinho.produto.quantidade:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, 
+                detail="O produto não possui a quantidade solicitada em estoque")    
 
     dados_carrinho = await busca_carrinho_cliente(carrinho.email_cliente)
 
@@ -47,18 +59,17 @@ async def adiciona_itens_carrinho(carrinho: CarrinhoRequest) -> CarrinhoCompleto
             detail="Já existe um carrinho para este cliente")
     
     valor_total = round(carrinho.produto.quantidade \
-                # * produto_disponivel.get("preco", 0.0) \
+                * float(dados_produto.preco) \
                 + carrinho.valor_frete, 2)
 
     produto_atualizado = CarrinhoItemSchema(
         codigo = carrinho.produto.codigo,
         cor = carrinho.produto.cor,
-        numeracao = carrinho.produto.numeracao,
+        tamanho = carrinho.produto.tamanho,
         quantidade = carrinho.produto.quantidade,
         presente = carrinho.produto.presente,
         data_atualizacao = datetime.now(),
-        preco_unitario = round(0, 2)
-        # preco_unitario = round(produto_disponivel.get("preco", 0.0), 2)
+        preco_unitario = round(float(dados_produto.preco), 2)
     )
 
     carrinho_atualizado.quantidade_total = carrinho.produto.quantidade
@@ -135,7 +146,7 @@ async def busca_produto_carrinho(
     for produto in produtos_carrinho:
         if produto.codigo == produto_procurado.codigo and \
             produto.cor == produto_procurado.cor and \
-            produto.numeracao == produto_procurado.numeracao:
+            produto.tamanho == produto_procurado.tamanho:
 
             return produto
     return
@@ -218,7 +229,7 @@ async def fecha_carrinho(email_cliente: EmailStr) -> PedidoSchema:
 async def busca_carrinhos_por_produto(
     codigo_produto: str,
     cor_produto: str,
-    numeracao_produto: str,
+    tamanho_produto: int,
     numero_pagina: int,
     qtde_por_pagina: int) -> ListaCarrinhos:
 
@@ -227,7 +238,7 @@ async def busca_carrinhos_por_produto(
         qtde_por_pagina
         )
     
-    filtro_produto = await uteis.gera_filtro_produto(codigo_produto, cor_produto, numeracao_produto)
+    filtro_produto = await uteis.gera_filtro_produto(codigo_produto, cor_produto, tamanho_produto)
 
     resultado = await carrinhos.busca_carrinhos_por_produto(
         filtro_produto,

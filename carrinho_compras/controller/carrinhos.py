@@ -217,10 +217,15 @@ async def fecha_carrinho(email_cliente: EmailStr) -> PedidoSchema:
     pedido.data_criacao_pedido = datetime.now()
     pedido.status = "Pedido Recebido"
 
-    # baixa_estoque = await produtos.baixa_estoque_pedido(dados_carrinho)
-    # if not baixa_estoque:
-    #     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, 
-    #   detail="Não foi possível realizar a baixa do estoque dos produtos do carrinho")
+    for produto_carrinho in dados_carrinho.produtos:
+        produto = AdaptadorProduto()
+        dados_produto = await produto.pega(produto_carrinho.sku, "sku")
+        dados_produto = Produto(**dados_produto)
+        dados_produto.estoque = dados_produto.estoque - produto_carrinho.quantidade
+        baixa_estoque = await produto.atualiza(dados_produto, dados_produto.sku, "sku")
+        if not baixa_estoque:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+          detail="Ocorreu um erro ao realizar a baixa de estoque dos produtos do carrinho")
 
     id_pedido = await pedidos.insere_pedido(pedido)
     await carrinhos.exclui_carrinho(email_cliente)

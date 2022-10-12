@@ -24,6 +24,7 @@ class CarrinhoBase(BaseModel):
 
 
 class CarrinhoItemSchema(CarrinhoItemBase):
+    sku: Optional[str] = Field(description="Identificador único do produto")
     preco_unitario: Optional[float] = Field(description="Preço unitário do produto")
     data_criacao: Optional[datetime] = Field(description="Data de inserção do item")
     data_atualizacao: Optional[datetime] = Field(description="Data da última atualização do item")

@@ -63,6 +63,7 @@ async def adiciona_itens_carrinho(carrinho: CarrinhoRequest) -> CarrinhoCompleto
                 + carrinho.valor_frete, 2)
 
     produto_atualizado = CarrinhoItemSchema(
+        sku = dados_produto.sku,
         codigo = carrinho.produto.codigo,
         cor = carrinho.produto.cor,
         tamanho = carrinho.produto.tamanho,

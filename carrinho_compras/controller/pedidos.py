@@ -53,7 +53,11 @@ async def busca_pedidos_por_produto(
         qtde_por_pagina
         )
     
-    filtro_produto = await uteis.gera_filtro_produto(codigo_produto, cor_produto, numeracao_produto)
+    filtro_produto = await uteis.gera_filtro_produto(
+        codigo_produto,
+        cor_produto,
+        numeracao_produto
+        )
 
     resultado = await pedidos.busca_pedidos_por_produto(
         filtro_produto,

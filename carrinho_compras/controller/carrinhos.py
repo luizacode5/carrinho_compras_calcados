@@ -172,7 +172,7 @@ async def exclui_item_carrinho(
                     * dados_produto_carrinho.quantidade, 2)
         
         quantidade_total = dados_carrinho.quantidade_total \
-                        - dados_produto_carrinho.quantidade
+                         - dados_produto_carrinho.quantidade
 
         carrinho_atualizar = CarrinhoAtualizacao(
             email_cliente = email_cliente,

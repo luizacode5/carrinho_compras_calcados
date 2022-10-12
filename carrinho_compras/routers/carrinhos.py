@@ -77,14 +77,10 @@ async def fecha_carrinho(email_cliente: EmailStr = Query(
     response_model=ListaCarrinhos,
     status_code=status.HTTP_200_OK)
 async def busca_carrinhos_por_produto(
-    codigo_produto: str = Query(default=None,
-        description="Código do produto"),
-    cor_produto: str = Query(default=None,
-        description="Cor do produto"),
-    numeracao_produto: str = Query(default=None,
-        description="Numeração do produto"),
-    numero_pagina: int = Query(default=0,
-        description="Número da página"),
+    codigo_produto: str = Query(default=None, description="Código do produto"),
+    cor_produto: str = Query(default=None, description="Cor do produto"),
+    numeracao_produto: str = Query(default=None, description="Numeração do produto"),
+    numero_pagina: int = Query(default=0, description="Número da página"),
     qtde_por_pagina: int = Query(default=50,
         description="Quantidade de registros por página. Valor máximo: 50")):
     resultado = await carrinhos.busca_carrinhos_por_produto(
@@ -101,8 +97,7 @@ async def busca_carrinhos_por_produto(
     response_model=ProdutosPopulares,
     status_code=status.HTTP_200_OK)
 async def busca_produtos_populares(
-    numero_pagina: int = Query(default=0,
-        description="Número da página"),
+    numero_pagina: int = Query(default=0, description="Número da página"),
     qtde_por_pagina: int = Query(default=50,
         description="Quantidade de registros por página. Valor máximo: 50")):
     resultado = await carrinhos.busca_produtos_populares(
@@ -116,8 +111,7 @@ async def busca_produtos_populares(
     response_model=ListaCarrinhos,
     status_code=status.HTTP_200_OK)
 async def busca_carrinhos_abandonados(
-    numero_pagina: int = Query(default=0,
-        description="Número da página"),
+    numero_pagina: int = Query(default=0, description="Número da página"),
     qtde_por_pagina: int = Query(default=50,
         description="Quantidade de registros por página. Valor máximo: 50")):
     resultado = await carrinhos.busca_carrinhos_abandonados(

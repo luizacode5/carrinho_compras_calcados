@@ -6,7 +6,7 @@ from carrinho_compras.schemas.carrinhos import *
 from carrinho_compras.persistence.persistence_bd import obter_colecao
 
 
-COLECAO_CARRINHOS = obter_colecao("carrinho")
+COLECAO_CARRINHOS = obter_colecao("carrinhos")
 
 async def insere_carrinho(carrinho: CarrinhoAtualizacao):
     try:

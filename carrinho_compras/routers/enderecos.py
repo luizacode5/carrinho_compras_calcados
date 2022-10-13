@@ -24,7 +24,7 @@ async def criar_endereco(
     except ObjetoNaoEncontrado:
         raise HTTPException(status_code=404, detail="Usuário não encontado")
     except ObjetoNaoModificado:
-        raise HTTPException(status_code=200, detail="Nada foi modificados")
+        raise HTTPException(status_code=200, detail="Nada foi modificado")
     except PyMongoError:
         raise HTTPException(status_code=400, detail="Falha ao inserir")
 

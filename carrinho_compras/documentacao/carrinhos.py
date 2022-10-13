@@ -1,4 +1,3 @@
-
 POST_CARRINHO_DESCRICAO = """
 Cria um carrinho para o cliente, caso o cliente não tenha carrinho aberto.   
 Adiciona um produto ao carrinho. Podem ser adicionados vários produtos ao carrinho, fazendo uma requisição para cada produto.   

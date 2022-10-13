@@ -1,4 +1,3 @@
-
 GET_PEDIDO_POR_ID_DESCRICAO = """
 Retorna os dados do pedido, de acordo com o id do pedido informado.   
    
@@ -48,7 +47,7 @@ Filtros de paginação:
 Se o processo for realizado corretamente, a API retornará sucesso (código HTTP 200), e no corpo da resposta será retornada a lista de produtos, com a quantidade total de cada um.   
 """
 
-GET_TOTAIS_PEDIDOS_POR_CLIENTE_DESCRICAO =  """
+GET_TOTAIS_PEDIDOS_POR_CLIENTE_DESCRICAO = """
 Retorna uma lista com os clientes e a quantidade e o valor total de pedidos de cada um.    
    
 Filtros de paginação:   

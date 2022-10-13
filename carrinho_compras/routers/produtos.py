@@ -13,7 +13,7 @@ from carrinho_compras.schemas.produtos import Produto
 rota_produtos = APIRouter(prefix="/produtos", tags=["Produtos"])
 
 
-@rota_produtos.post("/", status_code=201, response_model=Produto)
+@rota_produtos.post("/", status_code=201, response_model=Produto, summary="Cria o Produto", description="Nesta etapa o produto é criado")
 async def criar_produto(
     produto: Produto,
     adaptador: AdaptadorProduto = Depends(),
@@ -26,7 +26,7 @@ async def criar_produto(
         raise HTTPException(status_code=400, detail=f"Falha ao inserir")
 
 
-@rota_produtos.put("/", status_code=200, response_model=Produto)
+@rota_produtos.put("/", status_code=200, response_model=Produto, summary="Atualização do Produto")
 async def alterar_produto(
     produto: Produto,
     adaptador: AdaptadorProduto = Depends(),
@@ -39,7 +39,7 @@ async def alterar_produto(
         raise HTTPException(status_code=400, detail=f"Falha ao atualizar {e}")
 
 
-@rota_produtos.get("/sku", response_model=Produto)
+@rota_produtos.get("/sku", response_model=Produto, summary="Retorna o Produto pelo SKU")
 async def retornar_produto_sku(
     sku: str,
     adaptador: AdaptadorProduto = Depends(),
@@ -50,7 +50,7 @@ async def retornar_produto_sku(
     return produto
 
 
-@rota_produtos.get("/nome", response_model=Produto)
+@rota_produtos.get("/nome", response_model=Produto, summary="Retorna o Produto pelo Nome")
 async def retornar_produto_nome(
     nome: str,
     adaptador: AdaptadorProduto = Depends(),
@@ -61,7 +61,7 @@ async def retornar_produto_nome(
     return produto
 
 
-@rota_produtos.get("/codigo", response_model=Produto)
+@rota_produtos.get("/codigo", response_model=Produto, summary="Retorna o Produto por Cor e Tamanho")
 async def retornar_produto_codigo_cor_tamanho(
     codigo: str,
     cor: str,
@@ -75,7 +75,7 @@ async def retornar_produto_codigo_cor_tamanho(
     return produto
 
 
-@rota_produtos.delete("/", status_code=204)
+@rota_produtos.delete("/", status_code=204, summary="Deleta o Produto")
 async def deletar_produto(
     sku: str,
     adaptador: AdaptadorProduto = Depends(),

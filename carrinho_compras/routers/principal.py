@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-rota_principal = APIRouter(prefix="", tags=["Home"])
+rota_principal = APIRouter(prefix="", tags=["Página inicial"])
 
 
 @rota_principal.get(

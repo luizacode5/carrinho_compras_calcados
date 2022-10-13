@@ -11,7 +11,7 @@ from carrinho_compras.schemas.clientes import Cliente, Endereco
 rota_enderecos = APIRouter(prefix="/enderecos", tags=["Endereços"])
 
 
-@rota_enderecos.post("/", status_code=201, response_model=Endereco)
+@rota_enderecos.post("/", status_code=201, response_model=Endereco, description="Todos os campos são obrigatórios para que o endereço seja validado", summary="Cria o endereço")
 async def criar_endereco(
     email: EmailStr,
     endereco: Endereco,
@@ -29,7 +29,7 @@ async def criar_endereco(
         raise HTTPException(status_code=400, detail="Falha ao inserir")
 
 
-@rota_enderecos.delete("/")
+@rota_enderecos.delete("/", description="Para que o endereço seja deletado é necessário passar o e-mail", summary="Deleta o endereço")
 async def deletar_endereco(
     endereco: Endereco,
     email: EmailStr,

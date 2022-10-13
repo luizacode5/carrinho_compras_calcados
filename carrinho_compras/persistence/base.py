@@ -3,6 +3,7 @@ from decimal import Decimal
 from typing import Any, List
 
 from bson.decimal128 import Decimal128
+
 from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError, PyMongoError
 

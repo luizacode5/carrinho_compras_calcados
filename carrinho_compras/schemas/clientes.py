@@ -10,10 +10,17 @@ class Endereco(BaseModel):
     cidade: str
     estado: str
 
+class Token(BaseModel):  
+    access_token: str
+    token_type: str
+
 
 # Classe representando os dados do cliente
 class Cliente(BaseModel):
     nome: str
     endereco: Optional[List[Endereco]] = Field(default_factory=list)
     email: EmailStr
+    
+
+class ClienteInDB(Cliente):
     senha: str = Field(min_length=3)

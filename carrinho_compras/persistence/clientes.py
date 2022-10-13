@@ -6,16 +6,21 @@ from carrinho_compras.persistence.base import AdaptadorBase
 from carrinho_compras.persistence.excecoes import (ObjetoNaoEncontrado,
                                                    ObjetoNaoModificado)
 from carrinho_compras.persistence.persistence_bd import obter_colecao
-from carrinho_compras.schemas.clientes import Cliente, Endereco
-
+from carrinho_compras.schemas.clientes import Cliente, Endereco, ClienteInDB
+from passlib.context import CryptContext
 COLECAO_CLIENTES = obter_colecao("clientes")
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # uso do bcrypt porque ele é lento
 
+def get_password_hash(password):
+    return pwd_context.hash(password)
 class AdaptadorCliente(AdaptadorBase):
     def __init__(self):
         self.colecao = COLECAO_CLIENTES
 
-    async def cria(self, dados: Cliente) -> Cliente:
+    async def cria(self, dados: ClienteInDB) -> Cliente:
+        senha_criptografada = get_password_hash(password=dados.senha)
+        dados.senha = senha_criptografada
         return await super().cria(dados)
 
     async def adiciona_endereco(

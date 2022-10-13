@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from carrinho_compras.routers.carrinhos import rota_carrinhos
-from carrinho_compras.routers.clientes import rota_clientes
+from carrinho_compras.routers.clientes import rota_clientes, rota_autenticacao
 from carrinho_compras.routers.enderecos import rota_enderecos
 from carrinho_compras.routers.principal import rota_principal
 from carrinho_compras.routers.produtos import rota_produtos
@@ -15,7 +15,7 @@ def configurar_rotas(app: FastAPI):
     app.include_router(rota_produtos)
     app.include_router(rota_carrinhos)
     app.include_router(rota_pedidos)
-
+    app.include_router(rota_autenticacao)
 
 def criar_aplicacao_fastapi():
     descricao_api = "Esta API é responsável pelos carrinhos de compra, cadastro \

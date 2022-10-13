@@ -71,11 +71,11 @@ sudo docker-compose logs -f
 - [ ] Excluir o carrinho
 
 ## ✨ Entregas extras:
-- [ ] Especificação do produto
-- [ ] Documentação a API Rest com Swagger/OpenAPI
-- [ ] Readme
+- [x] Especificação do produto
+- [x] Documentação a API Rest com Swagger/OpenAPI
+- [x] Readme
 - [ ] Testes unitários
 - [ ] Autenticação
 - [ ] Mensagens de log
 - [ ] Deploy
-- [ ] Arquivo Dockerfile e docker-compose
+- [x] Arquivo Dockerfile e docker-compose

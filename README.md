@@ -78,7 +78,7 @@ Também é possível fazer essas operações de maneira mais simples utilizando 
 
 ### 👞 Produto
 - [x] Cadastrar produto
-- [ ] Atualizar dados de produto
+- [x] Atualizar dados de produto
 - [x] Pesquisar produto
 - [x] Pesquisar produto pelo nome
 - [x] Remover um produto
@@ -87,12 +87,13 @@ Também é possível fazer essas operações de maneira mais simples utilizando 
 - [ ] Abrir carrinho de compras
 - [ ] Adicionar itens no carrinho
 - [ ] Remover itens
-- [ ] Consultar o carrinho
-- [ ] Consultar o carrinho fechado
-- [ ] Consultar os produtor e quantidades do carrinho fechado
-- [ ] Consultar quantos carrinhos o cliente possui
-- [ ] Fechar o carrinho
-- [ ] Excluir o carrinho
+- [ ] Busca carrinho
+- [ ] Busca carrinho fechado
+- [ ] Busca produtos e quantidades do carrinho fechado
+- [ ] Busca quantos carrinhos o cliente possui
+- [x] Atualiza carrinho
+- [ ] Fechar carrinho
+- [x] Excluir carrinho
 
 ## ✨ Entregas extras:
 - [x] Especificação do produto

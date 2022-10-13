@@ -15,10 +15,10 @@ from carrinho_compras.schemas.clientes import Cliente, ClienteInDB, Token
 
 rota_clientes = APIRouter(prefix="/clientes", tags=["Clientes"])
 
-rota_autenticacao = APIRouter()
+rota_autenticacao = APIRouter(tags=["Autenticação"])
 
 
-@rota_clientes.post("/", status_code=201, response_model=Cliente)
+@rota_clientes.post("/", status_code=201, response_model=Cliente, summary="Cria um Usuário", description="A chave única na criação do usuário é o email")
 async def criar_usuário(
     usuario: ClienteInDB,
     adaptador: AdaptadorCliente = Depends(),
@@ -31,18 +31,18 @@ async def criar_usuário(
         raise HTTPException(status_code=400, detail="Falha ao inserir")
 
 
-@rota_clientes.get("/", response_model=Cliente)
+@rota_clientes.get("/", response_model=Cliente, summary="Retorna o usuário")
 async def retornar_usuario(
     email: EmailStr,
     adaptador: AdaptadorCliente = Depends(),
 ):
     usuario = await adaptador.pega(email)
     if usuario is None:
-        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+        raise HTTPException(status_code=404, detail="Usuário não Encontrado")
     return usuario
 
 
-@rota_clientes.delete("/", status_code=204)
+@rota_clientes.delete("/", status_code=204, summary="Deleta o Usuário")
 async def deletar_usuario(
     email: EmailStr,
     adaptador: AdaptadorCliente = Depends(),
@@ -57,8 +57,7 @@ async def deletar_usuario(
 
 
 @rota_autenticacao.post(
-    "/token", response_model=Token
-)  # endpoint que dado um usuario e uma senha retona o token
+    "/token", response_model=Token, summary="Retorna o Token")  # endpoint que dado um usuario e uma senha retona o token
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     adaptador: AdaptadorCliente = Depends(),

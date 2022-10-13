@@ -42,6 +42,30 @@ Para ver os logs:
 sudo docker-compose logs -f
 ```
 
+Para utilizar os endpoints de Criar Endereço, Deletar Endereço e Deletar Cliente é necessário autenticação.
+Para fazer a autenticação é necessãrio primeiro criar um cliente da maneira normal, e então obter um token fazendo um POST no endpoint `/token` com o email e a senha, utilizando FORM, por exemplo, para um Cliente com email `user@email.com` e senha `string`.
+
+```bash
+curl -X POST http://localhost:8000/token -F username='user@email.com' -F password='string'
+```
+
+Esse endpoint então retornará o token de acesso, o token então deve ser utilizado para utilização dos endpoints protegidos, sendo adicionado no endpoint da seguinte maneira, para o exemplo de adicionar um endereço a um cliente:
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8000/enderecos/?email=user%40email.com' \
+  -H 'Authorization: Bearer TOKEN_OBTIDO_ANTERIORMENTE_AQUI' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "rua": "string",
+  "cep": "string",
+  "cidade": "string",
+  "estado": "string"
+}'
+```
+
+Também é possível fazer essas operações de maneira mais simples utilizando o `/docs` onde possui um botão `Authorize` que já coloca o token automaticamente em todas as operações que o necessitam estando na página.
+
 ## 💻 Requisito Funcionais e entregas extras:
 
 ### 🙆🏽‍♀️ Clientes
@@ -75,7 +99,7 @@ sudo docker-compose logs -f
 - [x] Documentação a API Rest com Swagger/OpenAPI
 - [x] Readme
 - [ ] Testes unitários
-- [ ] Autenticação
+- [x] Autenticação
 - [ ] Mensagens de log
 - [ ] Deploy
 - [x] Arquivo Dockerfile e docker-compose

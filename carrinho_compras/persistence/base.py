@@ -1,10 +1,9 @@
 import logging
+from decimal import Decimal
 from typing import Any, List
 
-from pydantic import BaseModel
-from decimal import Decimal
 from bson.decimal128 import Decimal128
-
+from pydantic import BaseModel
 from pymongo.errors import DuplicateKeyError, PyMongoError
 
 from carrinho_compras.persistence.excecoes import (ObjetoNaoEncontrado,
@@ -14,7 +13,8 @@ from carrinho_compras.persistence.excecoes import (ObjetoNaoEncontrado,
 def convert_decimal(dict_item):
     # This function iterates a dictionary looking for types of Decimal and converts them to Decimal128
     # Embedded dictionaries and lists are called recursively.
-    if dict_item is None: return None
+    if dict_item is None:
+        return None
 
     for k, v in list(dict_item.items()):
         if isinstance(v, dict):
@@ -27,6 +27,7 @@ def convert_decimal(dict_item):
 
     return dict_item
 
+
 class AdaptadorBase:
     async def cria(self, dados: BaseModel) -> BaseModel:
         try:
@@ -37,21 +38,18 @@ class AdaptadorBase:
             raise
 
     async def atualiza(
-        self,
-        dados: BaseModel,
-        identificador: Any,
-        chave: str
+        self, dados: BaseModel, identificador: Any, chave: str
     ) -> BaseModel:
         atualizados = await self.colecao.update_one(
             {chave: identificador},
-            {"$set":  convert_decimal(dados.dict())},
+            {"$set": convert_decimal(dados.dict())},
         )
         if atualizados.matched_count == 0:
             raise ObjetoNaoEncontrado
         if atualizados.modified_count == 0:
             raise ObjetoNaoModificado
         return dados
-    
+
     async def atualiza_item_lista(
         self,
         dados: BaseModel,
@@ -77,9 +75,7 @@ class AdaptadorBase:
             logging.error(e)
             return
 
-    async def pega_todos(
-        self, pula: int = 0, limite: int = 10
-    ) -> List[BaseModel]:
+    async def pega_todos(self, pula: int = 0, limite: int = 10) -> List[BaseModel]:
         try:
             cursor = self.colecao.find().skip(pula).limit(limite)
             dados = await cursor.to_list(length=limite)

@@ -1,7 +1,7 @@
-from pydantic import BaseModel, Field
-from typing import Optional
 from datetime import datetime
-from pydantic import EmailStr
+from typing import Optional
+
+from pydantic import BaseModel, EmailStr, Field
 
 from carrinho_compras.schemas.uteis import *
 
@@ -27,22 +27,32 @@ class CarrinhoItemSchema(CarrinhoItemBase):
     sku: Optional[str] = Field(description="Identificador único do produto")
     preco_unitario: Optional[float] = Field(description="Preço unitário do produto")
     data_criacao: Optional[datetime] = Field(description="Data de inserção do item")
-    data_atualizacao: Optional[datetime] = Field(description="Data da última atualização do item")
+    data_atualizacao: Optional[datetime] = Field(
+        description="Data da última atualização do item"
+    )
 
 
 class CarrinhoSchema(CarrinhoBase):
     valor_total: Optional[float] = Field(description="Valor total líquido do carrinho")
     quantidade_total: Optional[int] = Field(description="Quantidade total de produtos")
-    data_criacao_carrinho: Optional[datetime] = Field(description="Data de criação do carrinho")
-    data_atualizacao: Optional[datetime] = Field(description="Data da última atualização")
+    data_criacao_carrinho: Optional[datetime] = Field(
+        description="Data de criação do carrinho"
+    )
+    data_atualizacao: Optional[datetime] = Field(
+        description="Data da última atualização"
+    )
 
 
 class CarrinhoCompleto(CarrinhoSchema):
-    produtos: Optional[list[CarrinhoItemSchema]] = Field(description="Lista de produtos")
+    produtos: Optional[list[CarrinhoItemSchema]] = Field(
+        description="Lista de produtos"
+    )
 
 
 class ListaCarrinhos(ConsultaPaginada):
-    carrinhos: Optional[list[CarrinhoCompleto]] = Field([], description="Lista de carrinhos")
+    carrinhos: Optional[list[CarrinhoCompleto]] = Field(
+        [], description="Lista de carrinhos"
+    )
 
 
 class CarrinhoRequest(CarrinhoBase):
@@ -54,19 +64,20 @@ class CarrinhoRequest(CarrinhoBase):
                 "email_cliente": "email@email.com",
                 "codigo": 123456,
                 "cep": 38408975,
-                "forma_pagamento" : "Cartão",
-                "tipo_entrega" : "Transportadora",
-                "valor_frete" : 15.65,
-                "produto":{
-                            "codigo": "111",
-                            "cor": "Vermelho",
-                            "tamanho": "38",
-                            "quantidade": 2,
-                            "presente": False
-                        }
-                }
+                "forma_pagamento": "Cartão",
+                "tipo_entrega": "Transportadora",
+                "valor_frete": 15.65,
+                "produto": {
+                    "codigo": "111",
+                    "cor": "Vermelho",
+                    "tamanho": "38",
+                    "quantidade": 2,
+                    "presente": False,
+                },
             }
-            
+        }
+
+
 class CarrinhoAtualizacao(CarrinhoSchema):
     produto: Optional[CarrinhoItemSchema] = Field(description="Dados do produto")
 
@@ -78,14 +89,11 @@ class ExclusaoProdutoRequest(BaseModel):
 
     class Config:
         schema_extra = {
-            "example": {
-                "codigo": "111",
-                "cor": "Vermelho",
-                "tamanho": "38"
-            }
+            "example": {"codigo": "111", "cor": "Vermelho", "tamanho": "38"}
         }
 
 
 class ProdutosPopulares(ConsultaPaginada):
     produtos: Optional[list[QuantidadeTotalPorProduto]] = Field(
-            description="Lista de produtos mais adicionados ao carrinho")
+        description="Lista de produtos mais adicionados ao carrinho"
+    )

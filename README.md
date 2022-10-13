@@ -84,23 +84,28 @@ Também é possível fazer essas operações de maneira mais simples utilizando 
 - [x] Remover um produto
 
 ### 🛒 Carrinho
-- [ ] Abrir carrinho de compras
-- [ ] Adicionar itens no carrinho
-- [ ] Remover itens
-- [ ] Busca carrinho
-- [ ] Busca carrinho fechado
-- [ ] Busca produtos e quantidades do carrinho fechado
-- [ ] Busca quantos carrinhos o cliente possui
-- [x] Atualiza carrinho
-- [ ] Fechar carrinho
-- [x] Excluir carrinho
+- [x] Criar carrinho de compras e adicionar itens
+- [x] Atualizar os dados do carrinho
+- [x] Remover itens
+- [x] Remover carrinho
+- [x] Busca carrinho por cliente
+- [x] Consultar carrinhos por produto
+- [x] Consultar carrinhos abandonados
+- [x] Consultar produtos "em alta"/"populares" nos carrinhos
+- [x] Fechar carrinho (pedido)
+
+- [x] Consultar pedido (carrinho fechado) por id
+- [x] Consultar pedidos por cliente
+- [x] Consultar pedidos por produto
+- [x] Consultar produtos mais vendidos
+- [x] Consultar quantidade e valor total de pedidos por cliente
 
 ## ✨ Entregas extras:
 - [x] Especificação do produto
 - [x] Documentação a API Rest com Swagger/OpenAPI
 - [x] Readme
-- [ ] Testes unitários
+- [x] Testes unitários (parcial)
 - [x] Autenticação
-- [ ] Mensagens de log
-- [ ] Deploy
+- [x] Mensagens de log
 - [x] Arquivo Dockerfile e docker-compose
+- [ ] Deploy

@@ -13,7 +13,7 @@ cliente_mongo = iniciar_cliente_mongo()
 
 
 def obter_base_dados() -> AsyncIOMotorDatabase:
-    return cliente_mongo.carrinho
+    return cliente_mongo.get_default_database()
 
 
 def obter_colecao(nome_colecao: str) -> AsyncIOMotorCollection:

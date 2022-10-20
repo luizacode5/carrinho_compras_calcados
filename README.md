@@ -66,6 +66,13 @@ curl -X 'POST' \
 
 Também é possível fazer essas operações de maneira mais simples utilizando o `/docs` onde possui um botão `Authorize` que já coloca o token automaticamente em todas as operações que o necessitam estando na página.
 
+## Deploy no Heroku
+
+https://carrinho-compras-luiza-code.herokuapp.com/docs#/
+
+
+###### OBS: Ainda não está funcionando completamente, mudanças ainda serão realizadas.
+
 ## 💻 Requisito Funcionais e entregas extras:
 
 ### 🙆🏽‍♀️ Clientes
@@ -108,4 +115,4 @@ Também é possível fazer essas operações de maneira mais simples utilizando 
 - [x] Autenticação
 - [x] Mensagens de log
 - [x] Arquivo Dockerfile e docker-compose
-- [ ] Deploy
+- [x] Deploy
